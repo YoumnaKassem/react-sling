@@ -19,7 +19,7 @@ jobs:
       - checkout
       - run: mkdir fares
       - run:
-          name: "Say hello"
+          name: "hey hey"
 
           command: echo "Hi every body I'm tring to $YOOOYO_TRY share this file with other jobs!" > fares/hello.txt
       - persist_to_workspace:
