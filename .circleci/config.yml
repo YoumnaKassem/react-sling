@@ -9,47 +9,24 @@ commands:
       - run: echo "I love coding"
       - run: echo <<parameters.id>>
 jobs:
-  say-hello:
-
-    docker:
-      - image: cimg/base:stable
-    environment:
-      YOYO_TRY: locloc/<<pipeline.id>>
-    steps:
-      - checkout
-      - run: mkdir fares
-      - run:
-          name: "hey hey"
-
-          command: echo "Hi every body I'm tring to $YOOOYO_TRY share this file with other jobs!" > fares/hello.txt
-      - persist_to_workspace:
-          root: .
-          paths:
-            - fares
-      - printpipelineid:
-          id: "345"
-      - run :
-          command: echo "help help"
-          when: on_fail
-
-  say-world:
+  build:
     docker:
       - image: circleci/node:13.8.0
-    
     steps:
       - checkout
       - run:
-          name: "say world"
-          command: echo "<<pipeline.id>> ... world!"
-      - attach_workspace:
-          at: ./
+          name: "building source code"
+          command: npm i
+      - save_cache:
+          key: "dependencies"
+          paths:
+            - /src/node_modules
+      - run: npm run build
 
-      - run: cat fares/hello.txt
+
 
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello
-      - say-world:
-          requires: [say-hello]
+      - build
           
