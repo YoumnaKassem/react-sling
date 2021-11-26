@@ -1,0 +1,55 @@
+version: 2.1
+
+commands:
+  printpipelineid:
+    parameters:
+      id:
+        type: string
+    steps:
+      - run: echo "I love coding"
+      - run: echo <<parameters.id>>
+jobs:
+  say-hello:
+
+    docker:
+      - image: cimg/base:stable
+    environment:
+      YOYO_TRY: locloc/<<pipeline.id>>
+    steps:
+      - checkout
+      - run: mkdir fares
+      - run:
+          name: "Say hello"
+
+          command: echo "Hi every body I'm tring to $YOOOYO_TRY share this file with other jobs!" > fares/hello.txt
+      - persist_to_workspace:
+          root: .
+          paths:
+            - fares
+      - printpipelineid:
+          id: "345"
+      - run :
+          command: echo "help help"
+          when: on_fail
+
+  say-world:
+    docker:
+      - image: circleci/node:13.8.0
+    
+    steps:
+      - checkout
+      - run:
+          name: "say world"
+          command: echo "<<pipeline.id>> ... world!"
+      - attach_workspace:
+          at: ./
+
+      - run: cat fares/hello.txt
+
+workflows:
+  say-hello-workflow:
+    jobs:
+      - say-hello
+      - say-world:
+          requires: [say-hello]
+          
