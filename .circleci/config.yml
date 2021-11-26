@@ -1,19 +1,12 @@
 version: 2.1
 
-commands:
-  printpipelineid:
-    parameters:
-      id:
-        type: string
-    steps:
-      - run: echo "I love coding"
-      - run: echo <<parameters.id>>
 jobs:
   build:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - run: npm update
       - run:
           name: "building source code"
           command: npm i
